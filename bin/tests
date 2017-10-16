@@ -8,5 +8,5 @@ export -f pyclean
 
 while true; do
   # should replace the `ls` with `find`
-  ls src/*.py tests/*.py | PYTHONPATH=.:./src:./tests entr -r -d -c sh -c 'pyclean .; pyclean tests; green -vvv -p *_test.py'
+  ls src/*.py tests/*.py | PYTHONPATH=.:./src:./tests entr -r -d -c sh -c 'pyclean .; pyclean tests; green -vvv'
 done
