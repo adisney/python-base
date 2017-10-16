@@ -1,5 +1,5 @@
 # PYTHON BASE
-My base repo for python development with a focus on continuous TDD
+My base repo for python development with a focus on continuous TDD.
 
 ## Setup
 I reccommend using [virtualenv](https://virtualenv.pypa.io/en/stable/) and [virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/latest/). To use this repo most effectively, execute the following.
