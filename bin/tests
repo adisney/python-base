@@ -1,0 +1,12 @@
+#! /bin/bash
+
+pyclean () {
+        find . -type f -name "*.py[co]" -delete
+        find . -type d -name "__pycache__" -delete
+}
+export -f pyclean
+
+while true; do
+  # should replace the `ls` with `find`
+  ls src/*.py tests/*.py | PYTHONPATH=.:./src:./tests entr -r -d -c sh -c 'pyclean .; pyclean tests; green -vvv -p *_test.py'
+done
