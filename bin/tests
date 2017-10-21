@@ -6,7 +6,4 @@ pyclean () {
 }
 export -f pyclean
 
-while true; do
-  # should replace the `ls` with `find`
-  ls src/*.py tests/*.py | PYTHONPATH=.:./src:./tests entr -r -d -c sh -c 'pyclean .; pyclean tests; green -vvv'
-done
+ag -l --python | PYTHONPATH=.:./src:./tests entr -r -d -c sh -c 'pyclean .; pyclean tests; green -vvv'
