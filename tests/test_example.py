@@ -19,7 +19,7 @@ class TestExample(unittest.TestCase):
         self.requests = create_patch(self, 'example.requests', Mock(name="requests", post=post))
 
         self.open = create_patch(self,
-                                 '__builtin__.open',
+                                 'builtins.open',
                                  mock_open(read_data=json.dumps([{"field": 1}, {"field": 2}])))
 
         self.timer = Mock()
