@@ -1,16 +1,50 @@
-#! /bin/bash
+#!/usr/bin/env bash
+export abspath="$(cd "${0%/*}" 2>/dev/null; echo "$PWD"/"${0##*/}")"
+export bin_dir=`dirname $abspath`
+export root_dir=`dirname $bin_dir`
 
-pyclean () {
-        find . -type f -name "*.py[co]" -delete
-        find . -type d -name "__pycache__" -delete
+cleanCache () {
+    find . -type f -name "*.py[co]" -delete
+    find . -type d -name "__pycache__" -delete
 }
-export -f pyclean
+cleanup() {
+    echo ""
+    echo "Cleaning up..."
+}
+runTests() {
+    cleanCache python_base
+    cleanCache python_base/test
+    PYTHONPATH=$root_dir:$root_dir/python_base:$root_dir/python_base/test pipenv run green -vvv $root_dir/python_base
+}
+runTestsOnce() {
+    # Anything that needs to be done before running the tests...
+    runTests
+}
+runTestsContinuous() {
+    # Anything that needs to be done before running the tests continuosly...
+    find ./ -name "*.py" | PYTHONPATH=$root_dir:$root_dir/python_base:$root_dir/python_base/test entr -cdr bash -c "echo \"Running tests...\"; runTests"
+}
+export -f cleanCache
+export -f cleanup
+export -f runTests
+export -f runTestsOnce
+export -f runTestsContinuous
 
-if which entr > /dev/null; then
-  find ./ -name "*.py" | PYTHONPATH=.:./src:./tests entr -r -d -c sh -c 'pyclean .; pyclean tests; green -vvv'
+# Executes cleanup function at script exit.
+trap cleanup EXIT
+
+if [ -n "$1" ]; then
+    continuous="true"
+fi
+
+if [ -n "$continuous" ]; then
+    if ! which entr > /dev/null; then
+        echo ""
+        echo "WARNING: entr not found. Running the tests once then terminating..."
+        runTestsOnce
+    else
+        runTestsContinuous
+    fi
 else
-  export PYTHONPATH=.:./src:./tests
-  pyclean .
-  pyclean tests
-  green -vvv
+    runTestsOnce
 fi

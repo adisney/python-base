@@ -1,0 +1,26 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+certifi = "==2017.7.27.1"
+chardet = "==3.0.4"
+colorama = "==0.3.9"
+funcsigs = "==1.0.2"
+green = "==2.11.0"
+idna = "==2.6"
+mock = "==2.0.0"
+pbr = "==3.1.1"
+python-termstyle = "==0.1.10"
+requests = "==2.18.4"
+six = "==1.11.0"
+"urllib3" = "==1.22"
+"backports.shutil_get_terminal_size" = "==1.0.0"
+Unidecode = "==0.4.21"
+asynctest = "*"
+
+[dev-packages]
+
+[requires]
+python_version = "3.6"

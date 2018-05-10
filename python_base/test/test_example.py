@@ -1,6 +1,6 @@
 from mock import patch, MagicMock, Mock, mock_open, call, ANY
 import unittest
-from spec_helper import *
+from test_helper import *
 from example import *
 
 import json
