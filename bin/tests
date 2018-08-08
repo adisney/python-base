@@ -22,7 +22,7 @@ runTestsOnce() {
 }
 runTestsContinuous() {
     # Anything that needs to be done before running the tests continuosly...
-    find ./ -name "*.py" | PYTHONPATH=$root_dir:$root_dir/python_base:$root_dir/python_base/test entr -cdr bash -c "echo \"Running tests...\"; runTests"
+    find $root_dir -name "*.py" | PYTHONPATH=`find $root_dir/python_base/ -type d | paste -sd ":" -` entr -cdr bash -c "echo \"Running tests...\"; runTests"
 }
 export -f cleanCache
 export -f cleanup
