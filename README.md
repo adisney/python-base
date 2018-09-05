@@ -1,24 +1,55 @@
 # PYTHON BASE
 My base repo for python development with a focus on continuous TDD.
 
-## Setup
-I reccommend using [virtualenv](https://virtualenv.pypa.io/en/stable/) and [virtualenvwrapper](https://virtualenvwrapper.readthedocs.io/en/latest/). To use this repo most effectively, execute the following.
+# Development
 
+## Requirements
+* python 3.6.4
+* [pipenv](https://github.com/pypa/pipenv)
+* Node.js
+* bitgo-express
+
+## Setup Instructions
+
+Follow the below instructions to prepare your development environment. Once you are finished, [run the tests](#running-the-tests) to verify your setup.
+
+### Python 3.6
+If you need to install Python 3.6, execute the following:
 ```
-git clone git@github.com:adisney/python_base.git
-mv python_base your_project_name
-cd your_project_name
-mkvirtualenv your_project_name
-pip install -r requirements.txt
+sudo apt install -yq build-essential checkinstall git
+sudo apt install -yq libreadline-gplv2-dev libncursesw5-dev libssl-dev libsqlite3-dev tk-dev libgdbm-dev libc6-dev libbz2-dev
+wget https://www.python.org/ftp/python/3.6.0/Python-3.6.0.tar.xz
+tar xf Python-3.6.0.tar.xz
+cd Python-3.6.0/
+./configure
+sudo make altinstall
+```
+The above will install an executable named `python3.6` in a system directoy. Test that your installation was successful by running:
+```
+python3.6 --version
 ```
 
-## Running tests
-There is an executable file in `bin/ `that runs the python tests in the `test/` dir every time you save a file either in `src/` or `test/`. The bash utility [entr](http://entrproject.org/) is needed for this script to execute properly.
+### Pipenv
+This project depends on pipenv to manage python dependencies. To install pipenv and initialize the dev environment, execute:
+```
+python3.6 -m pip install pipenv
+pipenv install --python 3.6
+```
+Ensure that your pipenv is properly initialized by running:
+```
+pipenv run python --version
+```
+You should see output similar to the output from `python3.6 --version`, indicating that the version of python the virtual environment is using is at least Python 3.6.
 
-The test runner I am using called [green](https://github.com/CleanCut/green) and is compatible with tests written in unittest. This should work with both Python 2.7 and python 3. I have not tested with versions of python earlier than 2.7.
-
-To run your tests continuously, simply execute the following:
-
+# Running the tests
+Run the tests by executing the following command
 ```
 ./bin/tests
 ```
+
+I practice continuous testing. As such, I have the tests run every time a python file changes on disk. To run the test suite continuously run the command
+```
+./bin/continuous_tests
+```
+
+This depends on the presence of the utility [entr](http://entrproject.org/) being present. If it is not found, the tests will be run a single time and exit.
