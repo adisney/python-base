@@ -6,8 +6,6 @@ My base repo for python development with a focus on continuous TDD.
 ## Requirements
 * python 3.6.4
 * [pipenv](https://github.com/pypa/pipenv)
-* Node.js
-* bitgo-express
 
 ## Setup Instructions
 
