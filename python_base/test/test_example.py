@@ -5,7 +5,7 @@ from example import *
 
 import json
 
-class TestExample(unittest.TestCase):
+class TestExample(asynctest.TestCase):
     def setUp(self):
         self.env_vars = {"EXAMPLE_VAR": "VALUE"}
         self.getenv = Mock(side_effect=self.retrieve_env_var)
