@@ -8,7 +8,6 @@ certifi = "==2017.7.27.1"
 chardet = "==3.0.4"
 colorama = "==0.3.9"
 funcsigs = "==1.0.2"
-green = "==2.11.0"
 idna = "==2.6"
 mock = "==2.0.0"
 pbr = "==3.1.1"
@@ -18,9 +17,12 @@ six = "==1.11.0"
 "urllib3" = "==1.22"
 "backports.shutil_get_terminal_size" = "==1.0.0"
 Unidecode = "==0.4.21"
-asynctest = "*"
 
 [dev-packages]
+"flake8" = "*"
+"autopep8" = "*"
+green = "==2.11.0"
+asynctest = "*"
 
 [requires]
 python_version = "3.6"
