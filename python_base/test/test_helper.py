@@ -1,23 +1,9 @@
-import unittest
-from mock import patch, MagicMock, Mock
-import asynctest
-
-def create_patch(test_case, patch_str, patch_obj=None, return_value=None, *args, **kwargs):
-    patcher = None
-    if patch_obj:
-        patcher = patch(patch_str, new=patch_obj, *args, **kwargs)
-    else:
-        patcher = patch(patch_str, return_value=return_value, *args, **kwargs)
-    test_case.addCleanup(patcher.stop)
-    return patcher.start()
+from asynctest import patch
 
 
-
-def create_async_patch(test_case, patch_str, patch_obj=None, return_value=None, *args, **kwargs):
-    patcher = None
-    if patch_obj:
-        patcher = asynctest.patch(patch_str, new=patch_obj, *args, **kwargs)
-    else:
-        patcher = asynctest.patch(patch_str, return_value=return_value, *args, **kwargs)
-    test_case.addCleanup(patcher.stop)
-    return patcher.start()
+def start_patch(testcase, patch_on=None, to_patch=None, *, target=None, **kwargs):
+    if not(target):
+        target = f"{patch_on.__module__}.{to_patch.__name__}"
+    p = patch(target, **kwargs)
+    testcase.addCleanup(p.stop)
+    return p.start()

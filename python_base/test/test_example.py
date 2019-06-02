@@ -1,34 +1,41 @@
-from mock import patch, MagicMock, Mock, mock_open, call, ANY
-import unittest
-from test_helper import *
-from example import *
+import asynctest
+from asynctest import Mock, mock_open, ANY
+from python_base.test.test_helper import start_patch
 
 import json
+import os
+import sys
+import requests
+from threading import Timer
+
+from python_base.example import Example
+
 
 class TestExample(asynctest.TestCase):
     def setUp(self):
-        self.env_vars = {"EXAMPLE_VAR": "VALUE"}
-        self.getenv = Mock(side_effect=self.retrieve_env_var)
-        create_patch(self, 'os.getenv', self.getenv)
-        self.stderr = create_patch(self, 'example.stderr')
+        self.env_vars = {"EXAMPLE_VAR": "VALUE", "OTHER_VAR": ANY}
+        self.p_getenv = Mock(side_effect=self.retrieve_env_var)
+        start_patch(self, Example, os, new=Mock(getenv=self.p_getenv))
+        self.p_stderr = Mock()
+        start_patch(self, Example, sys, new=Mock(stderr=self.p_stderr))
 
-        self.post_return = {"elements":[100, 2, 15, 28], "other_thing": "This is a thing (other)"}
+        self.post_return = {"elements": [100, 2, 15, 28], "other_thing": "This is a thing (other)"}
         post = Mock(return_value=Mock(status_code=200,
                                       json=Mock(return_value=self.post_return)))
         self.post = post
-        self.requests = create_patch(self, 'example.requests', Mock(name="requests", post=post))
+        self.requests = start_patch(self, Example, requests, new=Mock(name="requests", post=post))
 
-        self.open = create_patch(self,
-                                 'builtins.open',
-                                 mock_open(read_data=json.dumps([{"field": 1}, {"field": 2}])))
+        self.open = start_patch(self,
+                                target='builtins.open',
+                                new=mock_open(read_data=json.dumps([{"field": 1}, {"field": 2}])))
 
         self.timer = Mock()
-        self.timer_constructor = create_patch(self, 'example.Timer', Mock(return_value=self.timer))
+        self.timer_constructor = start_patch(self, Example, Timer, return_value=self.timer)
 
         self.example = Example()
 
     def test_gets_environment_variable_in_constructor(self):
-        self.getenv.assert_called_with("EXAMPLE_VAR", "default to this")
+        self.p_getenv.assert_called_with("EXAMPLE_VAR", "default to this")
 
     def test_sends_request(self):
         data = {"field": 1, "field2": 200}
@@ -40,13 +47,13 @@ class TestExample(asynctest.TestCase):
         self.requests.post = Mock(return_value=Mock(status_code=404))
         self.example.make_post_request("www.google.com", {})
 
-        self.stderr.write.assert_called_with("There was an error making the request: 404\n")
+        self.p_stderr.write.assert_called_with("There was an error making the request: 404\n")
 
     def test_writes_error_on_exception(self):
-        self.requests.post.side_effect=Exception("BadTimesMan")
+        self.requests.post.side_effect = Exception("BadTimesMan")
         self.example.make_post_request("www.google.com", {})
 
-        self.stderr.write.assert_called_with("There was an exception: Exception('BadTimesMan',)\n")
+        self.p_stderr.write.assert_called_with("There was an exception: Exception('BadTimesMan',)\n")
 
     def test_gets_json_response_from_request(self):
         self.assertEqual(self.post_return, self.example.make_post_request("www.google.com", {}))

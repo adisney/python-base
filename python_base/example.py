@@ -1,5 +1,7 @@
-import os, requests, json, traceback
-from sys import stderr
+import os
+import requests
+import json
+import sys
 from threading import Timer
 
 
@@ -16,14 +18,16 @@ class Example():
         try:
             response = requests.post(url, data=data)
             if response.status_code != 200:
-                stderr.write("There was an error making the request: %s\n"%response.status_code)
+                sys.stderr.write(f"There was an error making the request: {str(response.status_code)}")
             else:
                 return response.json()
         except Exception as e:
-            #print(traceback.format_exc())
-            stderr.write("There was an exception: %s\n"%repr(e))
+            sys.stderr.write(f"There was an exception: {repr(e)}")
 
     def execute_on_timer(self, period, f):
         f()
         timer = Timer(period, self.execute_on_timer, period, f)
         timer.start()
+
+    async def an_async_method(self):
+        pass
